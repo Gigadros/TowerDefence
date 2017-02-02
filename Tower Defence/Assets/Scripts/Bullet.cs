@@ -4,8 +4,9 @@ using UnityEngine;
 
 public class Bullet : MonoBehaviour {
 
+    public float power = 0.3f;
     public float speed = 15f;
-    public Transform target;
+    public GameObject enemyGO;
 
 	// Use this for initialization
 	void Start () {
@@ -14,24 +15,30 @@ public class Bullet : MonoBehaviour {
 	
     void BulletHit()
     {
-        Destroy(gameObject);
+        enemyGO.GetComponent<Enemy>().TakeDamage(power);
+        gameObject.SetActive(false);
     }
 
 	// Update is called once per frame
 	void FixedUpdate () {
-        Vector3 dir = target.position - this.transform.localPosition;
+        if (enemyGO == null)
+        {
+            gameObject.SetActive(false);
+            return;
+        }
+        Vector3 dir = enemyGO.transform.position - this.transform.localPosition;
         float distThisFrame = speed * Time.deltaTime;
 
         if (dir.magnitude <= distThisFrame)
         {
-            // Reached the path node
+            // Reached the target
             BulletHit();
         }
         else
         {
-            // Move towards next path node
+            // Move towards the target
             transform.Translate(dir.normalized * distThisFrame, Space.World);
-            // Turn to face the next path node
+            // Turn to face the target
             Quaternion targetRotation = Quaternion.LookRotation(dir);
             this.transform.rotation = Quaternion.Lerp(this.transform.rotation, targetRotation, Time.deltaTime * 3);
         }

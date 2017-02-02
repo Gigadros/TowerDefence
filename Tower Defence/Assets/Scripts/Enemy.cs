@@ -8,8 +8,8 @@ public class Enemy : MonoBehaviour {
     Transform targetPathNode;
     int targetNodeIndex = 0;
     float speed = 3f;
-    float rollRotation = -180f;
-    public int health = 1;
+    //float rollRotation = -180f;
+    public float health = 1f;
 	// Use this for initialization
 	void Start ()
     {
@@ -25,6 +25,21 @@ public class Enemy : MonoBehaviour {
     void ReachedGoal()
     {
         // TODO subtract from player life
+        Die();
+    }
+
+    public void TakeDamage(float damage)
+    {
+        health -= damage;
+        if(health <= 0)
+        {
+            Die();
+        }
+    }
+
+    public void Die()
+    {
+        // gameObject.SetActive(false);
         Destroy(gameObject);
     }
 
@@ -38,6 +53,7 @@ public class Enemy : MonoBehaviour {
             {
                 // Run out of path
                 ReachedGoal();
+                return;
             }
         }
 

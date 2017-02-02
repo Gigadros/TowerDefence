@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class Tower : MonoBehaviour {
 
-    float range = 5f;
-    float fireCooldown = 0.5f;
+    float range = 8f;
+    public float fireCooldown = 0.5f;
     float fireCooldownLeft = 0f;
     public GameObject bulletPrefab;
 
@@ -17,12 +17,17 @@ public class Tower : MonoBehaviour {
     // Shoot the Enemy
     void Shoot(Enemy e)
     {
-        GameObject bulletGO = (GameObject)Instantiate(bulletPrefab, this.transform.position, this.transform.rotation);
-        // TODO finish shoot function
+        GameObject bulletGO = ObjectPooler.current.GetPooledObject();
+        if (bulletGO == null) return;
+
+        bulletGO.transform.position = this.transform.position;
+        bulletGO.transform.rotation = this.transform.rotation;
+        bulletGO.GetComponent<Bullet>().enemyGO = e.gameObject;
+        bulletGO.SetActive(true);
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         // TODO optimize this!
         Enemy[] enemies = GameObject.FindObjectsOfType<Enemy>();
@@ -43,18 +48,20 @@ public class Tower : MonoBehaviour {
             {
                 Debug.Log("No enemies?");
             }
-
-            // Rotate tower to face enemy
-            Vector3 dir = nearestEnemy.transform.position - this.transform.position;
-            Quaternion lookRotation = Quaternion.LookRotation(dir);
-            this.transform.rotation = Quaternion.Euler(0, lookRotation.eulerAngles.y, 0);
-
+            if (dist <= range * 1.5)
+            {
+                // Rotate tower to face enemy
+                Vector3 dir = nearestEnemy.transform.position - this.transform.position;
+                Quaternion lookRotation = Quaternion.LookRotation(dir);
+                this.transform.rotation = Quaternion.Euler(0, lookRotation.eulerAngles.y, 0);
+                // TODO smooth out tower facing transition to new enemy
+            }
+        }
             fireCooldownLeft -= Time.deltaTime;
-            if (fireCooldownLeft <= 0)
+            if (fireCooldownLeft <= 0 && dist <= range)
             {
                 fireCooldownLeft = fireCooldown;
                 Shoot(nearestEnemy);
             }
-        }
     }
 }
