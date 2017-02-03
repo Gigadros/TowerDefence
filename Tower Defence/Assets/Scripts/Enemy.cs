@@ -10,8 +10,9 @@ public class Enemy : MonoBehaviour {
     float speed = 3f;
     //float rollRotation = -180f;
     public float health = 1f;
-	// Use this for initialization
-	void Start ()
+    public int reward = 2;
+    // Use this for initialization
+    void Start ()
     {
         pathGO = GameObject.Find("Path");
 	}
@@ -39,6 +40,8 @@ public class Enemy : MonoBehaviour {
 
     public void Die()
     {
+        GameObject.FindObjectOfType<Score>().gold += reward;
+        GameObject.FindObjectOfType<Score>().score += reward*25;
         // gameObject.SetActive(false);
         Destroy(gameObject);
     }

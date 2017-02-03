@@ -7,6 +7,7 @@ public class Tower : MonoBehaviour {
     float range = 8f;
     public float fireCooldown = 0.5f;
     float fireCooldownLeft = 0f;
+    public int buildCost = 60;
     public GameObject bulletPrefab;
 
 	// Use this for initialization
@@ -26,7 +27,6 @@ public class Tower : MonoBehaviour {
         bulletGO.SetActive(true);
     }
 
-    // Update is called once per frame
     void FixedUpdate()
     {
         // TODO optimize this!
@@ -57,11 +57,11 @@ public class Tower : MonoBehaviour {
                 // TODO smooth out tower facing transition to new enemy
             }
         }
-            fireCooldownLeft -= Time.deltaTime;
-            if (fireCooldownLeft <= 0 && dist <= range)
-            {
-                fireCooldownLeft = fireCooldown;
-                Shoot(nearestEnemy);
-            }
+        fireCooldownLeft -= Time.deltaTime;
+        if (fireCooldownLeft <= 0 && dist <= range)
+        {
+            fireCooldownLeft = fireCooldown;
+            Shoot(nearestEnemy);
+        }
     }
 }
