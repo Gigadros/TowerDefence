@@ -2,16 +2,22 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
+public class PooledObject
+{
+    public GameObject Object;
+    public int pooledAmount;
+    public bool willGrow = true;
+}
+
 public class ObjectPooler : MonoBehaviour {
 
     // Make the object pooler easily accessible without keeping a reference to it
     public static ObjectPooler current;
 
-    public GameObject pooledObject;
-    public int pooledAmount = 20;
-    public bool willGrow = true;
-
-    List<GameObject> objectPool;
+    // Array of types of objects to pool
+    public PooledObject[] objects;
+    List<GameObject>[] objectPool;
 
     void Awake()
     {
@@ -21,30 +27,35 @@ public class ObjectPooler : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
         // Build a pool of objects
-		objectPool = new List<GameObject>();
-        for(int i = 0; i < pooledAmount; i++)
+        GameObject obj;
+		objectPool = new List<GameObject>[objects.Length];
+        for(int i = 0; i < objects.Length; i++)
         {
-            GameObject obj = (GameObject)Instantiate(pooledObject);
-            obj.SetActive(false);
-            objectPool.Add(obj);
+            objectPool[i] = new List<GameObject>();
+            for (int num = 0; num < objects[i].pooledAmount; num++)
+            {
+                obj = (GameObject)Instantiate(objects[i].Object);
+                obj.SetActive(false);
+                objectPool[i].Add(obj);
+            }
         }
     }
 
-    public GameObject GetPooledObject()
+    public GameObject GetPooledObject(int id)
     {
         // Search the object pool for an inactive object
-        for (int i = 0; i < objectPool.Count; i++)
+        for (int i = 0; i < objectPool[id].Count; i++)
         {
-            if (!objectPool[i].activeInHierarchy)
+            if (!objectPool[id][i].activeInHierarchy)
             {
-                return objectPool[i];
+                return objectPool[id][i];
             }
         }
         // Create a new object if there are no inactive ones, and the pool is allowed to grow
-        if (willGrow)
+        if (objects[id].willGrow)
         {
-            GameObject obj = (GameObject)Instantiate(pooledObject);
-            objectPool.Add(obj);
+            GameObject obj = (GameObject)Instantiate(objects[id].Object);
+            objectPool[id].Add(obj);
             return obj;
         }
         // default in the event that the object pool cannot return an object to use

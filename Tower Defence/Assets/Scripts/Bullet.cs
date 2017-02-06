@@ -6,6 +6,8 @@ public class Bullet : MonoBehaviour {
 
     public float power = 0.3f;
     public float speed = 15f;
+    public bool isSlowShot = false;
+    float slowDuration = 0.5f, slowPower = 0.5f;
     public GameObject enemyGO;
 
 	// Use this for initialization
@@ -15,14 +17,24 @@ public class Bullet : MonoBehaviour {
 	
     void BulletHit()
     {
-        enemyGO.GetComponent<Enemy>().TakeDamage(power);
+        if (isSlowShot)
+        {
+            enemyGO.GetComponent<Enemy>().SlowDown(slowDuration, slowPower);
+            enemyGO.GetComponent<Enemy>().TakeDamage(power/2);
+        }
+        else
+        {
+            enemyGO.GetComponent<Enemy>().TakeDamage(power);
+        }
+        isSlowShot = false;
         gameObject.SetActive(false);
     }
 
 	// Update is called once per frame
 	void FixedUpdate () {
-        if (enemyGO == null)
+        if (enemyGO == null || !enemyGO.activeSelf)
         {
+            isSlowShot = false;
             gameObject.SetActive(false);
             return;
         }

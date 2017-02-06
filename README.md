@@ -5,7 +5,7 @@ Unity tower defence game
 
 This project was created with Unity for educational purposes.
 
-## Credits:
+## Credits
 
 Created by Jordan Knight.
 

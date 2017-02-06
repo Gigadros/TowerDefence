@@ -84,7 +84,8 @@
     <Compile Include="Assets\Scripts\PathNode.cs" />
     <Compile Include="Assets\Scripts\Score.cs" />
     <Compile Include="Assets\Scripts\Spawn.cs" />
-    <Compile Include="Assets\Scripts\Tower.cs" />
+    <Compile Include="Assets\Scripts\Tower1.cs" />
+    <Compile Include="Assets\Scripts\Tower2.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="GenerateTargetFrameworkMonikerAttribute" />

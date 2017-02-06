@@ -10,6 +10,7 @@ public class LoadOnClick : MonoBehaviour
 
     public void LoadScene(string sceneName)
     {
+        Time.timeScale = 1f;
         loadingImage.SetActive(true);
         UnityEngine.SceneManagement.SceneManager.LoadScene(sceneName);
     }

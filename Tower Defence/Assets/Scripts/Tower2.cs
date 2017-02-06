@@ -2,14 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Tower : MonoBehaviour {
+public class Tower2 : MonoBehaviour {
 
-    float range = 8f;
-    public float fireCooldown = 0.5f;
+    float range = 5f;
+    public float fireCooldown = 0.7f;
     float fireCooldownLeft = 0f;
-    public int buildCost = 60;
-    public GameObject bulletPrefab;
-
+    public int buildCost = 40;
+    int bulletPoolID = 0;
 	// Use this for initialization
 	void Start () {
 		
@@ -18,12 +17,13 @@ public class Tower : MonoBehaviour {
     // Shoot the Enemy
     void Shoot(Enemy e)
     {
-        GameObject bulletGO = ObjectPooler.current.GetPooledObject();
+        GameObject bulletGO = ObjectPooler.current.GetPooledObject(bulletPoolID);
         if (bulletGO == null) return;
 
-        bulletGO.transform.position = this.transform.position;
+        bulletGO.transform.position = this.transform.position + Vector3.up;
         bulletGO.transform.rotation = this.transform.rotation;
         bulletGO.GetComponent<Bullet>().enemyGO = e.gameObject;
+        bulletGO.GetComponent<Bullet>().isSlowShot = true;
         bulletGO.SetActive(true);
     }
 

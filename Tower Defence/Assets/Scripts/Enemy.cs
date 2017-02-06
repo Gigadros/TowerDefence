@@ -8,8 +8,11 @@ public class Enemy : MonoBehaviour {
     Transform targetPathNode;
     int targetNodeIndex = 0;
     float speed = 3f;
+    bool isSlowed = false;
+    float slowMultiplier, slowCooldown;
     //float rollRotation = -180f;
-    public float health = 1f;
+    public float maxHealth = 1f;
+    public float currentHealth = 1f;
     public int reward = 2;
     // Use this for initialization
     void Start ()
@@ -19,31 +22,56 @@ public class Enemy : MonoBehaviour {
 	
     void GetNextPathNode()
     {
-        targetPathNode = pathGO.transform.GetChild(targetNodeIndex);
-        targetNodeIndex++;
+        try
+        {
+            targetPathNode = pathGO.transform.GetChild(targetNodeIndex);
+            targetNodeIndex++;
+        }
+        catch
+        {
+            ReachedGoal();
+        }
+        
     }
 
     void ReachedGoal()
     {
-        // TODO subtract from player life
+        GameObject.FindObjectOfType<Score>().lives--;
         Die();
     }
 
     public void TakeDamage(float damage)
     {
-        health -= damage;
-        if(health <= 0)
+        currentHealth -= damage;
+        if(currentHealth <= 0)
         {
             Die();
+            RewardPlayer();
         }
     }
 
+    public void SlowDown(float slowDuration, float slowPower)
+    {
+        isSlowed = true;
+        slowCooldown = slowDuration;
+        slowMultiplier = slowPower;
+    }
+
+
     public void Die()
     {
+        // Reset health and pathing, then disable to return to object pool
+        currentHealth = maxHealth;
+        targetNodeIndex = 0;
+        targetPathNode = pathGO.transform.GetChild(targetNodeIndex);
+        isSlowed = false;
+        gameObject.SetActive(false);
+    }
+
+    void RewardPlayer()
+    {
         GameObject.FindObjectOfType<Score>().gold += reward;
-        GameObject.FindObjectOfType<Score>().score += reward*25;
-        // gameObject.SetActive(false);
-        Destroy(gameObject);
+        GameObject.FindObjectOfType<Score>().score += reward * 25;
     }
 
 	// Update is called once per frame
@@ -52,16 +80,22 @@ public class Enemy : MonoBehaviour {
         if (targetPathNode == null)
         {
             GetNextPathNode();
-            if (targetPathNode == null)
-            {
-                // Run out of path
-                ReachedGoal();
-                return;
-            }
         }
 
         Vector3 dir = targetPathNode.position - this.transform.localPosition;
         float distThisFrame = speed * Time.deltaTime;
+        if (isSlowed)
+        {
+            slowCooldown -= Time.deltaTime;
+            if (slowCooldown > 0)
+            {
+                distThisFrame *= slowMultiplier;
+            }
+            else
+            {
+                isSlowed = false;
+            }
+        }
 
         if (dir.magnitude <= distThisFrame)
         {
