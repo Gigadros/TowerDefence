@@ -5,6 +5,7 @@ using UnityEngine;
 public class Spawn : MonoBehaviour {
 
     public float spawnCooldown = 1.6f;
+    public float spawnCooldownLeft = 5f;
     public float waveCooldown = 10f;
     public int waveCount = 1;
     bool nextWave;

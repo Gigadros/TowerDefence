@@ -5,12 +5,18 @@ using UnityEngine.UI;
 
 public class Score : MonoBehaviour {
 
+    public string username = "no name";
     public int score = 0;
     public int gold = 100;
     public int lives = 10;
     public Text scoreText, goldText, waveText, livesText;
-    public GameObject GameOverScreen, PauseScreen;
-    bool isPaused = false;
+    public GameObject GameOverScreen, PauseScreen, SavedText;
+    bool isPaused = false, hasBeenSaved = false;
+
+    public void UpdateName(string newName)
+    {
+        username = newName;
+    }
 
     void GameOver()
     {
@@ -18,9 +24,18 @@ public class Score : MonoBehaviour {
         GameOverScreen.SetActive(true);
     }
 
+    public void Upload()
+    {
+        if (!hasBeenSaved)
+        {
+            HSController.current.PostHS();
+            SavedText.SetActive(true);
+        }
+    }
+
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetKeyDown(KeyCode.Escape) && !GameOverScreen.activeSelf)
         {
             isPaused = !isPaused;
             if (isPaused)
