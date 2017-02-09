@@ -7,7 +7,7 @@ public class Enemy : MonoBehaviour {
     GameObject pathGO;
     Transform targetPathNode;
     int targetNodeIndex = 0;
-    float speed = 3f;
+    public float speed = 3f;
     bool isSlowed = false;
     float slowMultiplier, slowCooldown;
     //float rollRotation = -180f;

@@ -9,9 +9,14 @@ public class Tower1 : MonoBehaviour {
     float fireCooldownLeft = 0f;
     public int buildCost = 60;
     int bulletPoolID = 0;
-	// Use this for initialization
-	void Start () {
-		
+
+    public AudioClip shotSound;
+    AudioSource source;
+    float volMin = 0.25f, volMax = 0.4f, pitchMin = 0.4f, pitchMax = 0.55f;
+
+
+	void Awake () {
+        source = GetComponent<AudioSource>();
 	}
     
     // Shoot the Enemy
@@ -24,6 +29,11 @@ public class Tower1 : MonoBehaviour {
         bulletGO.transform.rotation = this.transform.rotation;
         bulletGO.GetComponent<Bullet>().enemyGO = e.gameObject;
         bulletGO.SetActive(true);
+
+        //play shot sound
+        source.pitch = Random.Range(pitchMin, pitchMax);
+        float vol = Random.Range(volMin, volMax);
+        source.PlayOneShot(shotSound, vol);
     }
 
     void FixedUpdate()

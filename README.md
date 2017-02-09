@@ -14,7 +14,8 @@ Created by Jordan Knight.
 Menu background by Lil-Mz:
 http://lil-mz.deviantart.com/art/Bell-Tower-Background-167397756
 
-All other artwork is by Jordan Knight.
+Monster and Dark Knight models/animations from 3drt:
+http://3drt.com/
 
 ### Music
 
