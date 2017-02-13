@@ -4,29 +4,12 @@ using UnityEngine;
 
 public class Bullet : MonoBehaviour {
 
-    public float power = 0.3f;
-    public float speed = 15f;
-    public bool isSlowShot = false;
-    float slowDuration = 0.5f, slowPower = 0.5f;
-    public GameObject enemyGO;
-
-	// Use this for initialization
-	void Start () {
-		
-	}
+    public GameObject enemyGO; // enemy to shoot at
+    public Tower tower; // tower shot from
 	
     void BulletHit()
     {
-        if (isSlowShot)
-        {
-            enemyGO.GetComponent<Enemy>().SlowDown(slowDuration, slowPower);
-            enemyGO.GetComponent<Enemy>().TakeDamage(power/2);
-        }
-        else
-        {
-            enemyGO.GetComponent<Enemy>().TakeDamage(power);
-        }
-        isSlowShot = false;
+        enemyGO.GetComponent<Enemy>().TakeDamage(tower.power);
         gameObject.SetActive(false);
     }
 
@@ -34,12 +17,11 @@ public class Bullet : MonoBehaviour {
 	void FixedUpdate () {
         if (enemyGO == null || !enemyGO.activeSelf)
         {
-            isSlowShot = false;
             gameObject.SetActive(false);
             return;
         }
         Vector3 dir = enemyGO.transform.position - this.transform.localPosition;
-        float distThisFrame = speed * Time.deltaTime;
+        float distThisFrame = tower.speed * Time.deltaTime;
 
         if (dir.magnitude <= distThisFrame)
         {

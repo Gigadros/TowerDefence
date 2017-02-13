@@ -2,77 +2,36 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Tower2 : MonoBehaviour {
+public class Tower2 : Tower {
 
-    float range = 5f;
-    public float fireCooldown = 0.7f;
-    float fireCooldownLeft = 0f;
-    public int buildCost = 40;
-    int bulletPoolID = 0;
+    float slowDuration = 0.5f, slowPower = 0.5f;
 
-    public AudioClip shotSound;
-    AudioSource source;
-    float volMin = 0.25f, volMax = 0.4f, pitchMin = 0.8f, pitchMax = 1f;
-
-
-    void Awake()
+    private void Start()
     {
-        source = GetComponent<AudioSource>();
+        // set base stats
+        range = 5f;
+        fireCooldown = 0.7f;
+        fireCooldownLeft = 0f;
+        power = 0.15f;
+        speed = 15f;
+        buildCost = 40;
+        bulletPoolID = 0;
+        // set sound variables
+        volMin = 0.25f;
+        volMax = 0.4f;
+        pitchMin = 0.8f;
+        pitchMax = 1f;
     }
 
-    // Shoot the Enemy
-    void Shoot(Enemy e)
+    // Shoot the Enemy with a slow effect
+    public override GameObject Shoot(Enemy e)
     {
-        GameObject bulletGO = ObjectPooler.current.GetPooledObject(bulletPoolID);
-        if (bulletGO == null) return;
+        GameObject bulletGO = base.Shoot(e);
+        if (bulletGO == null) return null;
 
-        bulletGO.transform.position = this.transform.position + Vector3.up;
-        bulletGO.transform.rotation = this.transform.rotation;
-        bulletGO.GetComponent<Bullet>().enemyGO = e.gameObject;
-        bulletGO.GetComponent<Bullet>().isSlowShot = true;
-        bulletGO.SetActive(true);
-
-        //play shot sound
-        source.pitch = Random.Range(pitchMin, pitchMax);
-        float vol = Random.Range(volMin, volMax);
-        source.PlayOneShot(shotSound, vol);
+        bulletGO.GetComponent<Bullet>().tower = this;
+        e.GetComponent<Enemy>().SlowDown(slowDuration, slowPower);
+        return bulletGO;
     }
 
-    void FixedUpdate()
-    {
-        // TODO optimize this!
-        Enemy[] enemies = GameObject.FindObjectsOfType<Enemy>();
-
-        Enemy nearestEnemy = null;
-        float dist = Mathf.Infinity;
-
-        // Find nearest enemy
-        foreach (Enemy e in enemies)
-        {
-            float d = Vector3.Distance(this.transform.position, e.transform.position);
-            if (nearestEnemy == null || d < dist)
-            {
-                nearestEnemy = e;
-                dist = d;
-            }
-            if (nearestEnemy == null)
-            {
-                Debug.Log("No enemies?");
-            }
-            if (dist <= range * 1.5)
-            {
-                // Rotate tower to face enemy
-                Vector3 dir = nearestEnemy.transform.position - this.transform.position;
-                Quaternion lookRotation = Quaternion.LookRotation(dir);
-                this.transform.rotation = Quaternion.Euler(0, lookRotation.eulerAngles.y, 0);
-                // TODO smooth out tower facing transition to new enemy
-            }
-        }
-        fireCooldownLeft -= Time.deltaTime;
-        if (fireCooldownLeft <= 0 && dist <= range)
-        {
-            fireCooldownLeft = fireCooldown;
-            Shoot(nearestEnemy);
-        }
-    }
 }

@@ -83,8 +83,10 @@
     <Compile Include="Assets\Scripts\LoadOnClick.cs" />
     <Compile Include="Assets\Scripts\ObjectPooler.cs" />
     <Compile Include="Assets\Scripts\PathNode.cs" />
+    <Compile Include="Assets\Scripts\RotateAround.cs" />
     <Compile Include="Assets\Scripts\Score.cs" />
     <Compile Include="Assets\Scripts\Spawn.cs" />
+    <Compile Include="Assets\Scripts\Tower.cs" />
     <Compile Include="Assets\Scripts\Tower1.cs" />
     <Compile Include="Assets\Scripts\Tower2.cs" />
     <Compile Include="Assets\Scripts\Utilities.cs" />
