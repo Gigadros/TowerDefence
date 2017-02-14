@@ -19,7 +19,7 @@ public class Buildplace : MonoBehaviour {
                 {
                     // build tower above buildplace
                     GameObject g = (GameObject)Instantiate(towerPrefab1);
-                    g.transform.position = transform.position;
+                    g.transform.position = transform.position + Vector3.up * 0.4f;
                     isTowerPlaced = true;
                     GameObject.FindObjectOfType<Score>().gold -= towerPrefab1.GetComponent<Tower1>().buildCost;
                 }
@@ -38,7 +38,7 @@ public class Buildplace : MonoBehaviour {
                     {
                         // build tower above buildplace
                         GameObject g = (GameObject)Instantiate(towerPrefab2);
-                        g.transform.position = transform.position;
+                        g.transform.position = transform.position + Vector3.up * 0.4f;
                         isTowerPlaced = true;
                         GameObject.FindObjectOfType<Score>().gold -= towerPrefab2.GetComponent<Tower2>().buildCost;
                     }
